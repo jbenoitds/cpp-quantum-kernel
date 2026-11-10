@@ -1,0 +1,4 @@
+# Normalise line endings so Windows checkouts and CI behave identically.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.npy binary
