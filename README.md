@@ -1,32 +1,18 @@
-*Last updated: November 6, 2026*
-
 # cpp-quantum-kernel
 
-**A lightweight, dependency-free C++17 library for the core of ab initio quantum chemistry: Gaussian integrals, two-electron repulsion integrals, Hartree–Fock and MP2. It also includes a grid-based 1D Hartree–Fock solver.**
+A small C++17 library for the core of ab initio quantum chemistry: Gaussian integrals, two-electron repulsion integrals, Hartree–Fock and MP2, plus a grid-based 1D Hartree–Fock solver. It has no dependencies beyond a C++17 compiler and CMake (OpenMP optional).
 
-Everything here is written from scratch, including the linear algebra: the eigensolver, Boys function and integral recurrences are all in this repository. It needs only a C++17 compiler and CMake; OpenMP is optional. The code is checked against PySCF/libcint, the main open-source reference implementation, and agrees to machine precision (see [Validation](#validation)).
+I wrote it in 2024, during my chemistry degree, because I wanted to understand what actually happens inside programs like PySCF or Gaussian when you press "run". So everything is written from scratch, including the eigensolver, the Boys function and the integral recurrences, and I checked it against PySCF/libcint until it agreed to machine precision (see [Validation](#validation)).
 
 ```text
 $ ./build/qk-scf examples/h2o_crawford.xyz --bohr --mp2 --quiet
-RHF total energy          -74.9420799282  Eh      <- matches the published reference to 12 digits
+RHF total energy          -74.9420799282  Eh      <- same as the published reference to 12 digits
 MP2 correlation            -0.0491496362
 ```
 
----
+## Project history
 
-## Contents
-
-- [What it does](#what-it-does)
-- [Building](#building)
-- [Using it](#using-it)
-- [How it works](#how-it-works)
-- [Validation](#validation)
-- [Performance](#performance)
-- [Project layout](#project-layout)
-- [Limitations and roadmap](#limitations-and-roadmap)
-- [References](#references)
-
----
+I started it in February 2024. I wrote the code, and I used Claude (an AI assistant) to brainstorm the design of the integral engine and to review my code. The project lived on my laptop without version control until I published it in November 2026, which is also when I added the CI. This README was rewritten with Claude's help.
 
 ## What it does
 
@@ -278,12 +264,15 @@ examples/          XYZ geometries, library_usage.cpp
 .github/workflows/ CI: Ubuntu GCC/Clang/sanitizers, Windows MSVC, macOS
 ```
 
-## Limitations and roadmap
+## Limitations and what I'd like to add next
 
-- **Cartesian functions only.** 6-31G\* results match Gaussian's default (6D) and PySCF `cart=True`. Correlation-consistent bases (cc-pVXZ) load fine but are normally used with spherical harmonics, so their energies will differ slightly from published values.
-- **Closed-shell RHF only.** UHF/ROHF, analytic gradients and density fitting are natural next steps.
-- **No primitive-level screening yet.** Screening currently happens at the primitive-pair and shell-quartet levels. A Head-Gordon–Pople or Rys-quadrature kernel for high angular momentum would narrow the in-core gap to libcint.
-- **Windows and macOS** builds are configured in CI but were not built during development, which used Linux with GCC and Clang.
+Only Cartesian functions are supported for now. So 6-31G\* results match Gaussian's default (6D) and PySCF with `cart=True`, but correlation-consistent bases (cc-pVXZ), which load fine, are normally used with spherical harmonics, and their energies will differ slightly from the published values.
+
+The SCF is closed-shell RHF only. UHF/ROHF, analytic gradients and density fitting would be the natural next steps.
+
+Screening happens at the primitive-pair and shell-quartet levels, not yet at the primitive level. A Head-Gordon–Pople or Rys-quadrature kernel for high angular momentum would probably close most of the in-core gap with libcint (see [Performance](#performance)).
+
+By the way, I developed on Linux with GCC and Clang. The Windows and macOS builds are set up in CI, but I never built them myself during development.
 
 ## References
 
@@ -299,4 +288,4 @@ examples/          XYZ geometries, library_usage.cpp
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).
