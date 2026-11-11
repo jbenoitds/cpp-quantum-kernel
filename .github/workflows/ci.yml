@@ -16,7 +16,7 @@ jobs:
           - { name: "Ubuntu Clang (serial)", os: ubuntu-24.04, cxx: clang++, flags: "-DQK_ENABLE_OPENMP=OFF" }
           - { name: "Ubuntu GCC ASan+UBSan", os: ubuntu-24.04, cxx: g++,     flags: "-DQK_SANITIZE=ON -DQK_ENABLE_OPENMP=OFF -DCMAKE_BUILD_TYPE=Debug" }
           - { name: "Windows MSVC (OpenMP)", os: windows-2022, cxx: "",      flags: "" }
-          - { name: "macOS AppleClang",      os: macos-14,     cxx: "",      flags: "" }
+          - { name: "macOS AppleClang",      os: macos-latest, cxx: "",      flags: "" }
     steps:
       - uses: actions/checkout@v4
 
